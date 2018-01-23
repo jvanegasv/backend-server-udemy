@@ -7,7 +7,11 @@ exports.verificaToken = function(req, res, next) {
 
     var token = req.query.token;
     if (!token) {
-        token = req.get('authorization').replace('Bearer ', '');
+        if (req.get('authorization')) {
+            token = req.get('authorization').replace('Bearer ', '');
+        } else {
+            token = '';
+        }
     }
     jwt.verify(token, SEED, (err, decoded) => {
 
