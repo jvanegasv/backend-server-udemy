@@ -19,6 +19,7 @@ var medicoRoutes = require('./routes/medico');
 var loginRoutes = require('./routes/login');
 var busquedaRoutes = require('./routes/busqueda');
 var uploadRoutes = require('./routes/upload');
+var imgRoutes = require('./routes/img');
 
 
 // conexion to mongo
@@ -35,6 +36,7 @@ app.use('/medico', medicoRoutes);
 app.use('/login', loginRoutes);
 app.use('/busqueda', busquedaRoutes);
 app.use('/upload', uploadRoutes);
+app.use('/img', imgRoutes);
 app.use('/', appRoutes);
 
 // escuchar peticiones
