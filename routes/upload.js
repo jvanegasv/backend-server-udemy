@@ -1,5 +1,10 @@
 var express = require('express');
 var fileUpload = require('express-fileupload');
+var fs = require('fs');
+
+var Usuario = require('../models/usuario');
+var Medico = require('../models/medico');
+var Hospital = require('../models/hospital');
 
 var app = express();
 
@@ -63,14 +68,83 @@ app.put('/:tipo/:id', (req, res) => {
         }
     });
 
-    res.status(200).json({
-        ok: true,
-        mensaje: 'Peticion qap',
-        nombreCortado: nombreCortado,
-        extensionArchivo: extensionArchivo,
-        nombreArchivo: nombreArchivo
-    });
+    subirPorTipo(tipo, id, nombreArchivo, res);
 
 });
+
+function subirPorTipo(tipo, id, nombreArchivo, res) {
+
+    if (tipo === 'usuarios') {
+        Usuario.findById(id, (err, usuario) => {
+
+            var pathViejo = './uploads/usuarios/' + usuario.img;
+            // eliminar imagen anterior si existe
+            if (fs.existsSync(pathViejo)) {
+                fs.unlink(pathViejo);
+            }
+
+            usuario.img = nombreArchivo;
+
+            usuario.save((err, usuarioActualizado) => {
+
+                usuarioActualizado.password = ';)';
+
+                return res.status(200).json({
+                    ok: true,
+                    mensaje: 'Imagen de usuario actualizada',
+                    usuarioActualizado: usuarioActualizado
+                });
+
+            });
+
+        });
+    }
+    if (tipo === 'medicos') {
+        Medico.findById(id, (err, medico) => {
+
+            var pathViejo = './uploads/medicos/' + medico.img;
+            // eliminar imagen anterior si existe
+            if (fs.existsSync(pathViejo)) {
+                fs.unlink(pathViejo);
+            }
+
+            medico.img = nombreArchivo;
+
+            medico.save((err, medicoActualizado) => {
+
+                return res.status(200).json({
+                    ok: true,
+                    mensaje: 'Imagen de medico actualizada',
+                    medicoActualizado: medicoActualizado
+                });
+
+            });
+
+        });
+    }
+    if (tipo === 'hospitales') {
+        Hospital.findById(id, (err, hospital) => {
+
+            var pathViejo = './uploads/hospitales/' + hospital.img;
+            // eliminar imagen anterior si existe
+            if (fs.existsSync(pathViejo)) {
+                fs.unlink(pathViejo);
+            }
+
+            hospital.img = nombreArchivo;
+
+            hospital.save((err, hospitalActualizado) => {
+
+                return res.status(200).json({
+                    ok: true,
+                    mensaje: 'Imagen de hospital actualizada',
+                    hospitalActualizado: hospitalActualizado
+                });
+
+            });
+
+        });
+    }
+}
 
 module.exports = app;
