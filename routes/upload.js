@@ -77,6 +77,15 @@ function subirPorTipo(tipo, id, nombreArchivo, res) {
     if (tipo === 'usuarios') {
         Usuario.findById(id, (err, usuario) => {
 
+            if (!usuario) {
+                fs.unlink('./uploads/usuarios/' + nombreArchivo);
+                return res.status(400).json({
+                    ok: false,
+                    mensaje: 'Usuario no existe',
+                    errors: { message: 'Usuario no existe' }
+                });
+            }
+
             var pathViejo = './uploads/usuarios/' + usuario.img;
             // eliminar imagen anterior si existe
             if (fs.existsSync(pathViejo)) {
@@ -102,6 +111,15 @@ function subirPorTipo(tipo, id, nombreArchivo, res) {
     if (tipo === 'medicos') {
         Medico.findById(id, (err, medico) => {
 
+            if (!medico) {
+                fs.unlink('./uploads/medicos/' + nombreArchivo);
+                return res.status(400).json({
+                    ok: false,
+                    mensaje: 'Medico no existe',
+                    errors: { message: 'Medico no existe' }
+                });
+            }
+
             var pathViejo = './uploads/medicos/' + medico.img;
             // eliminar imagen anterior si existe
             if (fs.existsSync(pathViejo)) {
@@ -124,6 +142,16 @@ function subirPorTipo(tipo, id, nombreArchivo, res) {
     }
     if (tipo === 'hospitales') {
         Hospital.findById(id, (err, hospital) => {
+
+            if (!hospital) {
+                fs.unlink('./uploads/hospitales/' + nombreArchivo);
+                return res.status(400).json({
+                    ok: false,
+                    mensaje: 'Hospital no existe',
+                    errors: { message: 'Hospital no existe' }
+                });
+            }
+
 
             var pathViejo = './uploads/hospitales/' + hospital.img;
             // eliminar imagen anterior si existe
