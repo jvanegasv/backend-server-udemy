@@ -29,6 +29,43 @@ app.get('/todo/:busqueda', (req, res) => {
 
 });
 
+app.get('/coleccion/:tabla/:busqueda', (req, res) => {
+
+    var tabla = req.params.tabla;
+    var busqueda = req.params.busqueda;
+    var regExp = new RegExp(busqueda, 'i');
+
+    var promesa;
+
+    switch (tabla) {
+        case 'usuarios':
+            promesa = buscarUsuarios(regExp);
+            break;
+        case 'medicos':
+            promesa = buscarMedicos(regExp);
+            break;
+        case 'hospitales':
+            promesa = buscarHospitales(regExp);
+            break;
+        default:
+            return res.status(400).json({
+                ok: false,
+                mensaje: 'los tipos de busqueda son usuarios, medicos y hospitales',
+                error: {
+                    message: 'Tipo de tabla/coleccion invalido'
+                }
+            });
+    }
+
+    promesa.then((data) => {
+        res.status(200).json({
+            ok: true,
+            [tabla]: data,
+        });
+    });
+
+});
+
 function buscarHospitales(regExp) {
 
     return new Promise((resolve, reject) => {
