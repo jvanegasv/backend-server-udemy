@@ -9,7 +9,7 @@ var Hospital = require('../models/hospital');
 // obtener hospitales
 app.get('/', (req, res, next) => {
 
-    Hospital.find({}, 'nombre imagen usuario')
+    Hospital.find({})
         .exec((err, hospitales) => {
 
             if (err) {
@@ -55,7 +55,7 @@ app.put('/:id', mdAutenticacion.verificaToken, (req, res) => {
         }
 
         hospital.nombre = body.nombre;
-        hospital.img = body.img;
+        hospital.usuario = req.usuario._id;
 
         hospital.save((err, hospitalGurdado) => {
 
@@ -85,7 +85,6 @@ app.post('/', mdAutenticacion.verificaToken, (req, res) => {
 
     var hospital = new Hospital({
         nombre: body.nombre,
-        img: body.img,
         usuario: req.usuario._id
     });
 
@@ -101,8 +100,7 @@ app.post('/', mdAutenticacion.verificaToken, (req, res) => {
 
         res.status(201).json({
             ok: true,
-            hospital: hospitalGurdado,
-            usuarioToken: req.usuario
+            hospital: hospitalGurdado
         });
 
     });

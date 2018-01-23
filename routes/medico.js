@@ -9,7 +9,7 @@ var Medico = require('../models/medico');
 // obtener medicos
 app.get('/', (req, res, next) => {
 
-    Medico.find({}, 'nombre imagen usuario hospital')
+    Medico.find({})
         .exec((err, medicos) => {
 
             if (err) {
@@ -55,8 +55,8 @@ app.put('/:id', mdAutenticacion.verificaToken, (req, res) => {
         }
 
         medico.nombre = body.nombre;
-        medico.img = body.img;
         medico.hospital = body.hospital;
+        medico.usuario = req.usuario._id;
 
         medico.save((err, medicoGurdado) => {
 
@@ -86,7 +86,6 @@ app.post('/', mdAutenticacion.verificaToken, (req, res) => {
 
     var medico = new Medico({
         nombre: body.nombre,
-        img: body.img,
         usuario: req.usuario._id,
         hospital: body.hospital
     });
