@@ -6,13 +6,12 @@ var SEED = require('../config/config').SEED;
 var app = express();
 var Usuario = require('../models/usuario');
 
+
+// autenticacion de google
 const GoogleAuth = require('google-auth-library');
-// var auth = new GoogleAuth;
 
 const GOOGLE_CLIENT_ID = require('../config/config').GOOGLE_CLIENT_ID;
 const GOOGLE_SECRET = require('../config/config').GOOGLE_SECRET;
-
-// autenticacion de google
 app.post('/google', (req, res) => {
 
     var token = req.body.token || '';
@@ -34,13 +33,72 @@ app.post('/google', (req, res) => {
 
             var payload = login.getPayload();
             var userid = payload['sub'];
-            // If request specified a G Suite domain:
-            //var domain = payload['hd'];
 
-            res.status(200).json({
-                ok: true,
-                payload: payload
+            Usuario.findOne({ email: payload.email }, (err, usuario) => {
+
+                if (err) {
+                    return res.status(500).json({
+                        ok: false,
+                        mensaje: 'Error al buscar usuario',
+                        errors: e
+                    });
+                }
+
+                if (usuario) {
+                    if (!usuario.google) {
+                        return res.status(400).json({
+                            ok: false,
+                            mensaje: 'Debe utilizar la autenticacion normal'
+                        });
+                    } else {
+
+                        // crear token
+                        usuarioDB.password = ';)';
+                        var token = jwt.sign({ usuario: usuario },
+                            SEED, { expiresIn: 14400 } // expira en 4 horas (segundos)
+                        );
+
+                        res.status(200).json({
+                            ok: true,
+                            usuario: usuario,
+                            id: usuario._id,
+                            token: token
+                        });
+                    }
+                } else {
+
+                    // Si no existe el usuario, lo creamos
+                    var usuario = new Usuario();
+                    usuario.nombre = payload.name;
+                    usuario.email = payload.email;
+                    usuario.password = ':)';
+                    usuario.img = payload.picture;
+                    usuario.google = true;
+
+                    usuario.save((err, usuarioDB) => {
+
+                        if (err) {
+                            return res.status(500).json({
+                                ok: false,
+                                mensaje: 'Error al crear el usuario'
+                            });
+                        }
+
+                        var token = jwt.sign({ usuario: usuarioDB },
+                            SEED, { expiresIn: 14400 } // expira en 4 horas (segundos)
+                        );
+
+                        res.status(200).json({
+                            ok: true,
+                            usuario: usuarioDB,
+                            id: usuarioDB._id,
+                            token: token
+                        });
+
+                    });
+                }
             });
+
         }
     );
 
