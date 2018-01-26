@@ -53,7 +53,7 @@ app.post('/google', (req, res) => {
                     } else {
 
                         // crear token
-                        usuarioDB.password = ';)';
+                        usuario.password = ';)';
                         var token = jwt.sign({ usuario: usuario },
                             SEED, { expiresIn: 14400 } // expira en 4 horas (segundos)
                         );
