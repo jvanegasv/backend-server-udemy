@@ -44,7 +44,7 @@ app.get('/', (req, res, next) => {
 
 
 // actualizar usuario
-app.put('/:id', mdAutenticacion.verificaToken, (req, res) => {
+app.put('/:id', [mdAutenticacion.verificaToken, mdAutenticacion.verificaADMIN_ROLE], (req, res) => {
 
     var id = req.params.id;
 
@@ -96,7 +96,7 @@ app.put('/:id', mdAutenticacion.verificaToken, (req, res) => {
 });
 
 // crear usuario
-app.post('/', (req, res) => {
+app.post('/', [mdAutenticacion.verificaToken, mdAutenticacion.verificaADMIN_ROLE], (req, res) => {
 
     var body = req.body;
 
@@ -129,7 +129,7 @@ app.post('/', (req, res) => {
 });
 
 // borrar usuario
-app.delete('/:id', mdAutenticacion.verificaToken, (req, res) => {
+app.delete('/:id', [mdAutenticacion.verificaToken, mdAutenticacion.verificaADMIN_ROLE], (req, res) => {
 
     var id = req.params.id;
 
