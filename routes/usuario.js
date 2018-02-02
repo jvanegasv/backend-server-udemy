@@ -44,7 +44,7 @@ app.get('/', (req, res, next) => {
 
 
 // actualizar usuario
-app.put('/:id', [mdAutenticacion.verificaToken, mdAutenticacion.verificaADMIN_ROLE], (req, res) => {
+app.put('/:id', [mdAutenticacion.verificaToken, mdAutenticacion.verificaADMIN_o_MYSELF], (req, res) => {
 
     var id = req.params.id;
 
