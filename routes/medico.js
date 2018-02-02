@@ -23,7 +23,7 @@ app.get('/', (req, res, next) => {
             if (err) {
                 return res.status(500).json({
                     ok: false,
-                    mensaje: 'Error cargando usuarios',
+                    mensaje: 'Error cargando medicos',
                     errors: err
                 });
             }
@@ -31,7 +31,8 @@ app.get('/', (req, res, next) => {
             Medico.count({}, (err, conteo) => {
                 res.status(200).json({
                     ok: true,
-                    medicos: medicos
+                    medicos: medicos,
+                    total: conteo
                 });
             });
 
