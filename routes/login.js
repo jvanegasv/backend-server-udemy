@@ -6,6 +6,19 @@ var SEED = require('../config/config').SEED;
 var app = express();
 var Usuario = require('../models/usuario');
 
+var mdAutenticacion = require('../middleware/autenticacion');
+
+app.get('/renuevatoken', mdAutenticacion.verificaToken, (req, res) => {
+
+    var token = jwt.sign({ usuario: req.usuario },
+        SEED, { expiresIn: 14400 } // expira en 4 horas (segundos)
+    );
+    res.status(200).json({
+        ok: true,
+        token: token
+    });
+});
+
 
 // autenticacion de google
 const GoogleAuth = require('google-auth-library');
